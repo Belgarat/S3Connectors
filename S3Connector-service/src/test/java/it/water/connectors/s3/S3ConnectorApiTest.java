@@ -68,6 +68,24 @@ class S3ConnectorApiTest implements Service {
     }
 
     @Test
+    void configureShouldHandleEmptyEndpoint() {
+        // Creo una configurazione senza endpoint per testare il ramo if
+        var configWithoutEndpoint = S3ClientConfig.builder()
+                .accessKey("dummy")
+                .secretKey("dummy")
+                .region("eu-west-1")
+                .bucketName("mock-bucket")
+                .endpoint("")
+                .build();
+
+        var serviceWithoutEndpoint = S3ConnectorFactory.connect(configWithoutEndpoint);
+        serviceWithoutEndpoint.setS3Client(mock(S3Client.class));
+
+        // Ora puoi eseguire test sul service configurato senza endpoint
+        assertNotNull(serviceWithoutEndpoint);
+    }
+
+    @Test
     void listObjectsReturnsExpectedKeys() {
         ListObjectsV2Response mockResponse = ListObjectsV2Response.builder()
                 .contents(
@@ -99,6 +117,15 @@ class S3ConnectorApiTest implements Service {
         byte[] content = "hello".getBytes();
 
         service.uploadFile("file.txt", content, java.util.Map.of("type", "text"));
+
+        verify(mockS3Client).putObject(any(PutObjectRequest.class), any(RequestBody.class));
+    }
+
+    @Test
+    void updateFileCallsPutObject() {
+        byte[] content = "hello".getBytes();
+
+        service.update("file.txt", content, java.util.Map.of("type", "text"));
 
         verify(mockS3Client).putObject(any(PutObjectRequest.class), any(RequestBody.class));
     }
