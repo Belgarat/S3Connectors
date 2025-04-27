@@ -16,6 +16,7 @@ import software.amazon.awssdk.services.s3.model.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -27,7 +28,6 @@ class S3ConnectorApiTest implements Service {
     private S3ConnectorSystemServiceImpl service;
     private S3Client mockS3Client;
 
-    // QUI: Registro l'estensione correttamente
     @RegisterExtension
     static final S3MockExtension s3Mock = S3MockExtension.builder()
             .withSecureConnection(false)
@@ -47,6 +47,24 @@ class S3ConnectorApiTest implements Service {
 
         service = S3ConnectorFactory.connect(config);
         service.setS3Client(mockS3Client);
+    }
+
+    @Test
+    void configureShouldHandleNullEndpoint() {
+        // Creo una configurazione senza endpoint per testare il ramo if
+        var configWithoutEndpoint = S3ClientConfig.builder()
+                .accessKey("dummy")
+                .secretKey("dummy")
+                .region("eu-west-1")
+                .bucketName("mock-bucket")
+                .endpoint(null)
+                .build();
+
+        var serviceWithoutEndpoint = S3ConnectorFactory.connect(configWithoutEndpoint);
+        serviceWithoutEndpoint.setS3Client(mock(S3Client.class));
+
+        // Ora puoi eseguire test sul service configurato senza endpoint
+        assertNotNull(serviceWithoutEndpoint);
     }
 
     @Test
@@ -84,6 +102,28 @@ class S3ConnectorApiTest implements Service {
 
         verify(mockS3Client).putObject(any(PutObjectRequest.class), any(RequestBody.class));
     }
+
+    @Test
+    void createDirectoryAddsSlashIfMissing() {
+        service.createDirectory("folder");
+
+        verify(mockS3Client).putObject(
+                argThat((PutObjectRequest req) -> req.key().equals("folder/")),
+                any(RequestBody.class)
+        );
+    }
+
+    @Test
+    void createDirectoryDoesNotAddSlashIfAlreadyPresent() {
+        service.createDirectory("folder/");
+
+        verify(mockS3Client).putObject(
+                argThat((PutObjectRequest req) -> req.key().equals("folder/")),
+                any(RequestBody.class)
+        );
+    }
+
+
 
     @Test
     void deleteFileCallsDeleteObject() {
