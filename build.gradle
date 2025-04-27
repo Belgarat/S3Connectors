@@ -4,9 +4,9 @@ plugins {
 
 allprojects {
     
-    project.ext.S3ConnectorsVersion = project.waterVersion
+    project.ext.S3ConnectorVersion = project.waterVersion
     group 'it.water.connectors.s3'
-	version project.S3ConnectorsVersion
+	version project.S3ConnectorVersion
     repositories{
       mavenLocal()
 	  mavenCentral()
@@ -31,8 +31,8 @@ allprojects {
 sonarqube {
     properties {
         // Configurazione globale del progetto Sonar
-        property "sonar.projectKey", "S3Connectors"
-        property "sonar.projectName", "S3Connectors"
+        property "sonar.projectKey", "S3Connector"
+        property "sonar.projectName", "S3Connector"
         property "sonar.projectVersion", project.waterVersion
 
         // Includes all folder and sources for submodules
