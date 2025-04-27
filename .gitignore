@@ -10,7 +10,7 @@ target/*
 */build/*
 out/*
 */out/*
-gradlew
-gradlew.bat
+#gradlew
+#gradlew.bat
 /gradle
 .gradle
