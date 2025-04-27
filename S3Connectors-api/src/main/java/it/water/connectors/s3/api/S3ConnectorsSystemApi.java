@@ -1,6 +1,5 @@
 package it.water.connectors.s3.api;
 
-import it.water.connectors.s3.model.S3ClientConfig;
 import it.water.core.api.service.BaseSystemApi;
 
 import java.util.List;
