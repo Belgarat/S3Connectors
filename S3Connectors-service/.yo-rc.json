@@ -1,0 +1,9 @@
+{
+    "generator-water": {
+        "inner-project": true,
+        "project-type": "service",
+        "projectName": "S3Connectors",
+        "projectGroupId": "it.water.connectors.s3",
+        "projectVersion": "project.waterVersion"
+    }
+}
