@@ -47,6 +47,7 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:' + project.junitJupiterVersion
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:' + project.junitJupiterVersion
 	testImplementation 'org.atteo.classindex:classindex:' + project.atteoClassIndexVersion
+    testImplementation 'com.adobe.testing:s3mock-junit5:2.9.0'
 
 }
 
